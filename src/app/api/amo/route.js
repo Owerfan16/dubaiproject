@@ -3,6 +3,13 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const body = await request.json();
+    
+    // Добавляем CORS заголовки
+    const headers = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    };
 
     // Данные для подключения к amoCRM
     const DOMAIN = process.env.AMOCRM_DOMAIN || "gproleague";
@@ -201,12 +208,24 @@ export async function POST(request) {
       message: "Заявка успешно отправлена в amoCRM",
       fieldsUsed: foundFields,
       fieldsMissing: missingFields,
-    });
+    }, { headers });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500 }
+      { status: 500, headers }
     );
   }
+}
+
+// Добавляем обработчик OPTIONS для CORS
+export async function OPTIONS(request) {
+  return new Response(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+    },
+  });
 }
