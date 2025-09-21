@@ -208,12 +208,25 @@ export async function POST(request) {
       message: "Заявка успешно отправлена в amoCRM",
       fieldsUsed: foundFields,
       fieldsMissing: missingFields,
-    }, { headers });
+    }, { 
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+    });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
-      { status: 500, headers }
+      { 
+        status: 500, 
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        }
+      }
     );
   }
 }
